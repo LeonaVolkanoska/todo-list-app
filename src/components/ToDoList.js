@@ -2,10 +2,12 @@ import ToDoItem from "./ToDoItem";
 import "../assets/App.css";
 import { useState } from "react";
 import ItemModal from "./ItemModal";
+import FilterTask from "./FilterTask";
 function ToDoList() {
   const [tasks, setTasks] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [isEditTask, setIsEditTask] = useState({ id: null, text: "" });
+  const [filter, setFilter] = useState("all");
 
   function taskCompleted(id) {
     setTasks(
@@ -45,6 +47,12 @@ function ToDoList() {
     setIsVisible(true);
   }
 
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "completed") return task.completed;
+    if (filter === "uncompleted") return !task.completed;
+    return true;
+  });
+
   return (
     <>
       {isVisible && (
@@ -60,14 +68,15 @@ function ToDoList() {
       <h1 className="title">To-Do List</h1>
 
       <div className="todo-list">
-        <div className="add-task-container">
+        <div className="add-filter-task-container">
           <button className="add-task" onClick={addTask}>
             Add Task
           </button>
+          <FilterTask filter={filter} setFilter={setFilter} />
         </div>
 
         <div className="tasks-container">
-          {tasks.map((task) => (
+          {filteredTasks.map((task) => (
             <ToDoItem
               deleteTask={deleteTask}
               editTask={editTask}
